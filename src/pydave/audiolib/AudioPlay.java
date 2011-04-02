@@ -8,14 +8,18 @@ import android.app.Activity;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class AudioPlay extends Activity {
     static final String TAG = "AudioPlay";
 
     MediaPlayer player;
+
+    CountDownTimer elapsedTimeCounter;
 
     /** Called when the activity is first created. */
     @Override
@@ -28,10 +32,11 @@ public class AudioPlay extends Activity {
         setupButtons();
 
         final Uri uri = getUriToPlay();
-        setupPlayer(uri);
+        setupPlayback(uri);
 
         // start immediately
         player.start();
+        startTimeCodeUpdater();
     }
 
     /**
@@ -48,6 +53,12 @@ public class AudioPlay extends Activity {
                 player.stop();
             }
             player.release();
+            player = null;
+        }
+
+        if (elapsedTimeCounter != null) {
+            elapsedTimeCounter.cancel();
+            elapsedTimeCounter = null;
         }
 
         super.onStop();
@@ -81,12 +92,61 @@ public class AudioPlay extends Activity {
     }
 
     /**
+     * Setup the text indicating the elapsed time and the total duration of the
+     * audio file.
+     */
+    void setupTimeCodes() {
+        // assert: player is a valid MediaPlayer with an audio file prepared
+
+        final TextView duration = (TextView) findViewById(R.id.duration);
+        duration.setText(timeCodeToString(player.getDuration()));
+
+        final TextView elapsed = (TextView) findViewById(R.id.elapsed);
+        elapsed.setText(timeCodeToString(player.getCurrentPosition()));
+    }
+
+    /**
+     * Start a timer to keep the elapsed time up-to-date.
+     * Note that we only run the timer for the duration of the audio. If we
+     * were to pause, then we'd be out of whack and need to restart on play.
+     * Might as well stop the timer on pause.
+     */
+    void startTimeCodeUpdater() {
+        final TextView elapsed = (TextView) findViewById(R.id.elapsed);
+
+        // setup the timer that will keep elapsed updated
+        long ELAPSED_UPDATE_INTERVAL_ms = 500; // half a second
+        long duration_ms = player.getDuration(); // duration is milliseconds
+        elapsedTimeCounter = new CountDownTimer(duration_ms, ELAPSED_UPDATE_INTERVAL_ms) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                elapsed.setText(timeCodeToString(player.getCurrentPosition()));
+            }
+
+            @Override
+            public void onFinish() {
+                // do nothing
+            }
+        };
+        elapsedTimeCounter.start();
+    }
+
+    void stopTimeCodeUpdater() {
+        elapsedTimeCounter.cancel();
+    }
+
+    String timeCodeToString(int timeCode_ms) {
+        // TODO: actual implementation
+        return "" + timeCode_ms;
+    }
+
+    /**
      * Create the MediaPlayer and set it to play the input uri. We should only
      * play one file per invocation, so this works nicely.
      * 
      * @param uri The audio file to play
      */
-    void setupPlayer(Uri uri) {
+    void setupPlayback(Uri uri) {
         if (uri == null) {
             // TODO: error message
             return;
@@ -105,6 +165,8 @@ public class AudioPlay extends Activity {
                 returnResult(Result.COMPLETE);
             }
         });
+
+        setupTimeCodes();
     }
 
     /**
@@ -158,10 +220,16 @@ public class AudioPlay extends Activity {
         if (player.isPlaying()) {
             player.pause();
 
+            // don't need this if we're paused
+            stopTimeCodeUpdater();
+
             playPauseButton.setImageResource(R.drawable.media_playback_start);
         }
         else {
             player.start();
+
+            // gotta start updating again now that we're playing
+            startTimeCodeUpdater();
 
             playPauseButton.setImageResource(R.drawable.media_playback_pause);
         }
