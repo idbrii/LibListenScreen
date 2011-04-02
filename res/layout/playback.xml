@@ -20,7 +20,7 @@
     ></SeekBar>
     <ImageButton
         android:id="@+id/playpause"
-        android:src="@drawable/media_playback_start"
+        android:src="@drawable/media_playback_pause"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_above="@id/progress"
