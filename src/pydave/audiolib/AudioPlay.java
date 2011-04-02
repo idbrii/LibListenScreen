@@ -67,6 +67,18 @@ public class AudioPlay extends Activity {
     }
 
     /**
+     * {@inheritDoc}
+     * 
+     * @see Activity#onBackPressed()
+     */
+    @Override
+    public void onBackPressed() {
+        // don't call super
+
+        returnResult(RESULT_CANCELED);
+    }
+
+    /**
      * Add click listeners to the buttons.
      */
     void setupButtons() {

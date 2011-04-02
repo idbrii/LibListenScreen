@@ -43,7 +43,10 @@ public class Launcher extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         String output = "";
-        if (resultCode == AudioPlay.Result.SKIP_BACK) {
+        if (resultCode == RESULT_CANCELED) {
+            output += "Cancel";
+        }
+        else if (resultCode == AudioPlay.Result.SKIP_BACK) {
             output += "Back";
         }
         else if (resultCode == AudioPlay.Result.SKIP_FORWARD) {
