@@ -137,7 +137,7 @@ public class AudioPlay extends Activity {
     }
 
     String timeCodeToString(int timeCode_ms) {
-        return DateUtils.formatElapsedTime(timeCode_ms/1000);
+        return DateUtils.formatElapsedTime(timeCode_ms / 1000);
     }
 
     /**
@@ -192,6 +192,23 @@ public class AudioPlay extends Activity {
         }
 
         return Uri.fromFile(f);
+    }
+
+    static class Request {
+        static final int START;
+
+        static {
+            int i = 0;
+            START = i++;
+        }
+    }
+
+    static class Keys {
+        static final String URI = "URI";
+
+        static final String START_TIME = "START_TIME";
+
+        static final String CURRENT_TIME = "CURRENT_TIME";
     }
 
     static class Result {
