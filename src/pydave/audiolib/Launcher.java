@@ -7,6 +7,7 @@ package pydave.audiolib;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -41,9 +42,32 @@ public class Launcher extends Activity {
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String output = "";
+        if (resultCode == AudioPlay.Result.SKIP_BACK) {
+            output += "Back";
+        }
+        else if (resultCode == AudioPlay.Result.SKIP_FORWARD) {
+            output += "Forward";
+        }
+        else if (resultCode == AudioPlay.Result.COMPLETE) {
+            output += "Complete";
+        }
+        else {
+            output += "Unknown";
+        }
+
+        output += " (" + resultCode + ")";
+
+        if (data != null) {
+            final Bundle extras = data.getExtras();
+            if (extras != null) {
+                long timeCode_ms = extras.getInt(AudioPlay.Keys.CURRENT_TIME);
+                output += "\n" + DateUtils.formatElapsedTime(timeCode_ms / 1000);
+            }
+        }
+
         final TextView text = (TextView) findViewById(R.id.text);
-        // TODO: display useful text
-        text.setText("" + resultCode);
+        text.setText(output);
     }
 
     /**
