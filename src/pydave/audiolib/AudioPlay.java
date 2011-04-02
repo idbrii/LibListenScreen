@@ -195,11 +195,15 @@ public class AudioPlay extends Activity {
         return Uri.fromFile(f);
     }
 
+    // TODO: move this constant somewhere shared
+    // all request codes must be >= 0
+    static final int REQUEST_FIRST_USER = 0;
+
     static class Request {
         static final int START;
 
         static {
-            int i = 0;
+            int i = REQUEST_FIRST_USER;
             START = i++;
         }
     }
@@ -219,7 +223,7 @@ public class AudioPlay extends Activity {
 
         static final int COMPLETE;
         static {
-            int i = 0;
+            int i = RESULT_FIRST_USER;
             SKIP_BACK = i++;
             SKIP_FORWARD = i++;
             COMPLETE = i++;
