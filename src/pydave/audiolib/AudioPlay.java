@@ -5,6 +5,7 @@ import java.io.File;
 
 import pydave.engoid.sys.ExternalStorage;
 import android.app.Activity;
+import android.content.Intent;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -258,6 +259,10 @@ public class AudioPlay extends Activity {
     }
 
     void returnResult(int returnCode) {
-        // TODO: return the result to the calling activity
+        final Intent i = new Intent();
+        i.putExtra(Keys.CURRENT_TIME, player.getCurrentPosition());
+        setResult(returnCode, i);
+
+        finish();
     }
 }
