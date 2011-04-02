@@ -162,6 +162,7 @@ public class AudioPlay extends Activity {
         player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
+                // TODO: does this work?
                 returnResult(Result.COMPLETE);
             }
         });
