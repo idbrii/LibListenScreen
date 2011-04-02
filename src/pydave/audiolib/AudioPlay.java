@@ -9,6 +9,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.text.format.DateUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
@@ -136,8 +137,7 @@ public class AudioPlay extends Activity {
     }
 
     String timeCodeToString(int timeCode_ms) {
-        // TODO: actual implementation
-        return "" + timeCode_ms;
+        return DateUtils.formatElapsedTime(timeCode_ms/1000);
     }
 
     /**
