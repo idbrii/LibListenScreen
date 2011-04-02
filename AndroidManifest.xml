@@ -13,7 +13,7 @@
         android:icon="@drawable/media_playback_start"
     >
         <activity
-            android:name=".AudioPlay"
+            android:name=".Launcher"
             android:label="@string/app_name"
         >
             <intent-filter>
@@ -23,5 +23,9 @@
                     android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="AudioPlay"
+            android:label="@string/app_name"
+        ></activity>
     </application>
 </manifest>
