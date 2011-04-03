@@ -32,6 +32,7 @@ public class AudioPlay extends Activity {
 
         final Uri uri = getUriToPlay();
         setupPlayback(uri);
+        player.seekTo(getStartTimeCode());
 
         // start immediately
         player.start();
@@ -198,6 +199,22 @@ public class AudioPlay extends Activity {
         return Uri.parse(uriText);
     }
 
+    /**
+     * Determine where in the song we should start playing from the Intent.
+     * The calling Activity can tell us where to start. If not, we start at
+     * the beginning.
+     * 
+     * @return A time in the audio file. Does not validate that the time fits
+     *         in the length of the duration.
+     */
+    public int getStartTimeCode() {
+        final Intent received = getIntent();
+        final Bundle data = received.getExtras();
+
+        // this value is optional. if not received, we assume the start.
+        return data.getInt(Keys.START_TIME, 0);
+    }
+
     // TODO: move this constant somewhere shared
     // all request codes must be >= 0
     static final int REQUEST_FIRST_USER = 0;
@@ -212,10 +229,19 @@ public class AudioPlay extends Activity {
     }
 
     static class Keys {
+        // ////
+        // INPUT
+        //
+        // A uri describing an audio file. Required.
         static final String URI = "URI";
 
+        // When in the song to start playing. Time in milliseconds. Optional.
         static final String START_TIME = "START_TIME";
 
+        // ////
+        // OUTPUT
+        //
+        // Where in the song we stopped playing. Time in milliseconds.
         static final String CURRENT_TIME = "CURRENT_TIME";
     }
 

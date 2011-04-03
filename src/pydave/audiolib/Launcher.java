@@ -6,8 +6,6 @@ package pydave.audiolib;
 
 import java.io.File;
 
-import android.widget.Toast;
-
 import pydave.engoid.sys.ExternalStorage;
 import android.app.Activity;
 import android.content.Intent;
@@ -17,6 +15,7 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Launcher extends Activity {
 
@@ -84,7 +83,7 @@ public class Launcher extends Activity {
     protected void launchAudio() {
         final Intent i = new Intent(this, AudioPlay.class);
         i.putExtra(AudioPlay.Keys.URI, getUriToPlay().toString());
-        i.putExtra(AudioPlay.Keys.START_TIME, 0);
+        i.putExtra(AudioPlay.Keys.START_TIME, 5000);
 
         startActivityForResult(i, AudioPlay.Request.START);
     }
