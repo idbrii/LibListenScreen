@@ -1,9 +1,6 @@
 
 package pydave.audiolib;
 
-import java.io.File;
-
-import pydave.engoid.sys.ExternalStorage;
 import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -186,28 +183,19 @@ public class AudioPlay extends Activity {
     }
 
     /**
-     * Determine the uri that we should play.
-     * Currently this is a hard coded value, but later it should be retrieved
-     * from the Intent.
+     * Determine the uri that we should play from the Intent. The calling
+     * Activity needs to tell us what file to play.
      * 
-     * @return null on failure. Otherwise, a uri for an audio file.
+     * @return A uri for an audio file.
      */
     public Uri getUriToPlay() {
-        final ExternalStorage ext = new ExternalStorage();
+        final Intent received = getIntent();
+        final Bundle data = received.getExtras();
 
-        // I've placed some test mp3s in:
-        // /sdcard/Android/data/pydave.demo/files/
-        final File f = ext.getFile("pydave.demo",
-        // "music.mp3");
-        // "podcast.mp3");
-                "shortpod.mp3");
+        // we must receive the URI value or we can't do anything
+        final String uriText = data.getString(Keys.URI);
 
-        if (f == null) {
-            // TODO: error message
-            return null;
-        }
-
-        return Uri.fromFile(f);
+        return Uri.parse(uriText);
     }
 
     // TODO: move this constant somewhere shared

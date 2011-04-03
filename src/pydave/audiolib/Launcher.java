@@ -4,8 +4,14 @@
 
 package pydave.audiolib;
 
+import java.io.File;
+
+import android.widget.Toast;
+
+import pydave.engoid.sys.ExternalStorage;
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -77,10 +83,32 @@ public class Launcher extends Activity {
      */
     protected void launchAudio() {
         final Intent i = new Intent(this, AudioPlay.class);
-        // TODO: send actual data
-        i.putExtra(AudioPlay.Keys.URI, "");
+        i.putExtra(AudioPlay.Keys.URI, getUriToPlay().toString());
         i.putExtra(AudioPlay.Keys.START_TIME, 0);
 
         startActivityForResult(i, AudioPlay.Request.START);
+    }
+
+    /**
+     * Determine the uri that we should play.
+     * 
+     * @return null on failure. Otherwise, a uri for an audio file.
+     */
+    public Uri getUriToPlay() {
+        final ExternalStorage ext = new ExternalStorage();
+
+        // I've placed some test mp3s in:
+        // /sdcard/Android/data/pydave.demo/files/
+        final File f = ext.getFile("pydave.demo",
+        // "music.mp3");
+        // "podcast.mp3");
+                "shortpod.mp3");
+
+        if (f == null) {
+            Toast.makeText(this, "Failed to find file", Toast.LENGTH_SHORT);
+            return null;
+        }
+
+        return Uri.fromFile(f);
     }
 }
