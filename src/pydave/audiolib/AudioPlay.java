@@ -1,6 +1,8 @@
 
 package pydave.audiolib;
 
+import java.io.FileNotFoundException;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AudioPlay extends Activity {
     static final String TAG = "AudioPlay";
@@ -30,8 +33,23 @@ public class AudioPlay extends Activity {
 
         setupButtons();
 
-        final Uri uri = getUriToPlay();
-        setupPlayback(uri);
+        // create the MediaPlayer and connect it to the UI
+        try {
+            setupPlayback(getUriToPlay());
+        }
+        catch (FileNotFoundException ex) {
+            // If the file didn't exist, then we didn't create the MediaPlayer.
+            // We can't do anything at this point, so quit this Activity and
+            // return to caller.
+            Toast.makeText(this, ex.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+
+            // we can't even use returnResult because nothing is initialized
+            // set the error code and bail!
+            setResult(Result.ERROR);
+            finish();
+            return;
+        }
+
         player.seekTo(getStartTimeCode());
 
         // start immediately
@@ -157,19 +175,13 @@ public class AudioPlay extends Activity {
      * 
      * @param uri The audio file to play
      */
-    void setupPlayback(Uri uri) {
-        if (uri == null) {
-            // TODO: error message
-            return;
-        }
-
+    void setupPlayback(Uri uri) throws FileNotFoundException {
         // TODO: if we don't stop before we end, will the player still be
         // playing when we resume?
         player = MediaPlayer.create(this, uri);
         if (player == null) {
-            // TODO: error message
-            finish();
-            return;
+            final String errMsg_fmt = getString(R.string.file_no_exist_fmt);
+            throw new FileNotFoundException(String.format(errMsg_fmt, uri.toString()));
         }
 
         player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -189,12 +201,16 @@ public class AudioPlay extends Activity {
      * 
      * @return A uri for an audio file.
      */
-    public Uri getUriToPlay() {
+    public Uri getUriToPlay() throws FileNotFoundException {
         final Intent received = getIntent();
         final Bundle data = received.getExtras();
 
         // we must receive the URI value or we can't do anything
         final String uriText = data.getString(Keys.URI);
+        if (uriText == null) {
+            final String errMsg_fmt = getString(R.string.missing_parameter_fmt);
+            throw new FileNotFoundException(String.format(errMsg_fmt, Keys.URI));
+        }
 
         return Uri.parse(uriText);
     }
@@ -246,6 +262,8 @@ public class AudioPlay extends Activity {
     }
 
     static class Result {
+        static final int ERROR;
+
         static final int SKIP_BACK;
 
         static final int SKIP_FORWARD;
@@ -253,6 +271,7 @@ public class AudioPlay extends Activity {
         static final int COMPLETE;
         static {
             int i = RESULT_FIRST_USER;
+            ERROR = i++;
             SKIP_BACK = i++;
             SKIP_FORWARD = i++;
             COMPLETE = i++;

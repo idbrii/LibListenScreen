@@ -6,4 +6,10 @@
     <string
         name="app_name"
     >AudioLib</string>
+    <string
+        name="file_no_exist_fmt"
+    >File does not exist:</string>
+    <string
+        name="missing_parameter_fmt"
+    >Did not receive required parameter with key [%s]</string>
 </resources>

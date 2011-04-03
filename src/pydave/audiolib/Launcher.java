@@ -15,7 +15,6 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class Launcher extends Activity {
 
@@ -51,6 +50,9 @@ public class Launcher extends Activity {
         if (resultCode == RESULT_CANCELED) {
             output += "Cancel";
         }
+        else if (resultCode == AudioPlay.Result.ERROR) {
+            output += "Error";
+        }
         else if (resultCode == AudioPlay.Result.SKIP_BACK) {
             output += "Back";
         }
@@ -82,7 +84,15 @@ public class Launcher extends Activity {
      */
     protected void launchAudio() {
         final Intent i = new Intent(this, AudioPlay.class);
-        i.putExtra(AudioPlay.Keys.URI, getUriToPlay().toString());
+
+        i.putExtra(AudioPlay.Keys.URI, getUriToPlay());
+
+        // use this line to test missing file path
+        // i.putExtra(AudioPlay.Keys.URI, "/sdcard/Android/data/pydave.demo/files/noexist.mp3");
+
+        // use this line to test invalid file path
+        // i.putExtra(AudioPlay.Keys.URI, "noexist.mp3");
+
         i.putExtra(AudioPlay.Keys.START_TIME, 5000);
 
         startActivityForResult(i, AudioPlay.Request.START);
@@ -93,7 +103,7 @@ public class Launcher extends Activity {
      * 
      * @return null on failure. Otherwise, a uri for an audio file.
      */
-    public Uri getUriToPlay() {
+    public String getUriToPlay() {
         final ExternalStorage ext = new ExternalStorage();
 
         // I've placed some test mp3s in:
@@ -104,10 +114,9 @@ public class Launcher extends Activity {
                 "shortpod.mp3");
 
         if (f == null) {
-            Toast.makeText(this, "Failed to find file", Toast.LENGTH_SHORT);
             return null;
         }
 
-        return Uri.fromFile(f);
+        return Uri.fromFile(f).toString();
     }
 }
