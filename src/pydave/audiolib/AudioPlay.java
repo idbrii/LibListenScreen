@@ -165,6 +165,8 @@ public class AudioPlay extends Activity {
             return;
         }
 
+        // TODO: if we don't stop before we end, will the player still be
+        // playing when we resume?
         player = MediaPlayer.create(this, uri);
         if (player == null) {
             // TODO: error message
