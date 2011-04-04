@@ -88,12 +88,17 @@ public class Launcher extends Activity {
         i.putExtra(AudioPlay.Keys.URI, getUriToPlay());
 
         // use this line to test missing file path
-        // i.putExtra(AudioPlay.Keys.URI, "/sdcard/Android/data/pydave.demo/files/noexist.mp3");
+        // i.putExtra(AudioPlay.Keys.URI,
+        // "/sdcard/Android/data/pydave.demo/files/noexist.mp3");
 
         // use this line to test invalid file path
         // i.putExtra(AudioPlay.Keys.URI, "noexist.mp3");
 
         i.putExtra(AudioPlay.Keys.START_TIME, 5000);
+
+        i.putExtra(AudioPlay.Keys.HEADER, "Great Song");
+        i.putExtra(AudioPlay.Keys.DESCRIPTION,
+                "This is a song that will eventually end. But for now it goes on and on, my friend.");
 
         startActivityForResult(i, AudioPlay.Request.START);
     }

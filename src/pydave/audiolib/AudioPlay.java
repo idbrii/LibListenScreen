@@ -33,6 +33,8 @@ public class AudioPlay extends Activity {
 
         setupButtons();
 
+        setupText();
+
         // create the MediaPlayer and connect it to the UI
         try {
             setupPlayback(getUriToPlay());
@@ -119,6 +121,23 @@ public class AudioPlay extends Activity {
                 skipForward();
             }
         });
+    }
+
+    void setupText() {
+        final Intent received = getIntent();
+        final Bundle data = received.getExtras();
+
+        setTextViewFromBundle(data, Keys.HEADER, R.id.title);
+        setTextViewFromBundle(data, Keys.DESCRIPTION, R.id.description);
+    }
+
+    void setTextViewFromBundle(Bundle data, String key, int textViewId) {
+        String text = data.getString(key);
+        if (text == null) {
+            text = "";
+        }
+        final TextView view = (TextView) findViewById(textViewId);
+        view.setText(text);
     }
 
     /**
@@ -250,6 +269,13 @@ public class AudioPlay extends Activity {
         //
         // A uri describing an audio file. Required.
         static final String URI = "URI";
+
+        // Title information for the audio file: artist and track name.
+        // Optional.
+        static final String HEADER = "HEADER";
+
+        // Long form text description of the audio file. Optional.
+        static final String DESCRIPTION = "DESCRIPTION";
 
         // When in the song to start playing. Time in milliseconds. Optional.
         static final String START_TIME = "START_TIME";
