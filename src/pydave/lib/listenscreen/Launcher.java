@@ -12,6 +12,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+/**
+ * An example of how to use AudioPlay Activity.
+ *
+ * See launchAudio() for the intent launching AudioPlay. Note that we're not
+ * giving a generic Intent, but directly requiring the class. AudioPlay is not
+ * intended as a generic application for other apps to call. You should add it
+ * as a library and project reference for your Android project.
+ */
 public class Launcher extends Activity {
 
     /**
