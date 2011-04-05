@@ -4,13 +4,8 @@
 
 package pydave.lib.listenscreen;
 
-import java.io.File;
-
-import pydave.engoid.sys.ExternalStorage;
-import pydave.lib.listenscreen.AudioPlay;
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.format.DateUtils;
 import android.view.View;
@@ -110,19 +105,20 @@ public class Launcher extends Activity {
      * @return null on failure. Otherwise, a uri for an audio file.
      */
     public String getUriToPlay() {
-        final ExternalStorage ext = new ExternalStorage();
-
-        // I've placed some test mp3s in:
-        // /sdcard/Android/data/pydave.demo/files/
-        final File f = ext.getFile("pydave.demo",
-        // "music.mp3");
-        // "podcast.mp3");
-                "shortpod.mp3");
-
-        if (f == null) {
-            return null;
-        }
-
-        return Uri.fromFile(f).toString();
+        /*
+         * final ExternalStorage ext = new ExternalStorage();
+         * // I've placed some test mp3s in:
+         * // /sdcard/Android/data/pydave.demo/files/
+         * final File f = ext.getFile("pydave.demo",
+         * // "music.mp3");
+         * // "podcast.mp3");
+         * "shortpod.mp3");
+         * if (f == null) {
+         * return null;
+         * }
+         * return Uri.fromFile(f).toString();
+         */
+        
+        return "/sdcard/Android/data/pydave.demo/files/shortpod.mp3";
     }
 }
