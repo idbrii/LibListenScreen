@@ -2,7 +2,7 @@
 <resources>
     <string
         name="app_name"
-    >AudioLib</string>
+    >LibListenScreen</string>
     <string
         name="file_no_exist_fmt"
     >File does not exist:</string>
