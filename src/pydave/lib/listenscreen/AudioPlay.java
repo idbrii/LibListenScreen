@@ -16,6 +16,17 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * A simple UI for playing audio files.
+ * Currently provides these features:
+ * - Accept a song, descriptive text, and start time
+ * - so it can start in the middle of a song/podcast
+ * - Immediately begin playing the song
+ * - Provide a user interface like the Android Music app
+ * - Return the button pressed (if applicable) and the current song position
+ * - Return to caller once the song ends
+ * - Show in front of the lock screen
+ */
 public class AudioPlay extends Activity {
     static final String TAG = "AudioPlay";
 
