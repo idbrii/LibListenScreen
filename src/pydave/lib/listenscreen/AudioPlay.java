@@ -13,6 +13,7 @@ import android.text.format.DateUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -173,6 +174,7 @@ public class AudioPlay extends Activity {
      */
     void startTimeCodeUpdater() {
         final TextView elapsed = (TextView) findViewById(R.id.elapsed);
+        final SeekBar progress = (SeekBar) findViewById(R.id.progress);
 
         // setup the timer that will keep elapsed updated
         long ELAPSED_UPDATE_INTERVAL_ms = 500; // half a second
@@ -180,7 +182,9 @@ public class AudioPlay extends Activity {
         elapsedTimeCounter = new CountDownTimer(duration_ms, ELAPSED_UPDATE_INTERVAL_ms) {
             @Override
             public void onTick(long millisUntilFinished) {
-                elapsed.setText(timeCodeToString(player.getCurrentPosition()));
+                final int position = player.getCurrentPosition();
+                elapsed.setText(timeCodeToString(position));
+                progress.setProgress(position);
             }
 
             @Override
@@ -197,6 +201,31 @@ public class AudioPlay extends Activity {
 
     String timeCodeToString(int timeCode_ms) {
         return DateUtils.formatElapsedTime(timeCode_ms / 1000);
+    }
+
+    void setupProgress() {
+        final SeekBar progress = (SeekBar) findViewById(R.id.progress);
+
+        // apply the song's maximum to the SeekBar so it's using the same scale
+        // as MediaPlayer
+        progress.setMax(player.getDuration());
+
+        progress.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser) {
+                    player.seekTo(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
     }
 
     /**
@@ -222,6 +251,7 @@ public class AudioPlay extends Activity {
         });
 
         setupTimeCodes();
+        setupProgress();
     }
 
     /**
