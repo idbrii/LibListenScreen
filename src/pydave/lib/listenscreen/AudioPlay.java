@@ -29,11 +29,9 @@ import android.widget.Toast;
  * - Show in front of the lock screen
  */
 public class AudioPlay extends Activity {
-    static final String TAG = "AudioPlay";
+    private MediaPlayer player;
 
-    MediaPlayer player;
-
-    CountDownTimer elapsedTimeCounter;
+    private CountDownTimer elapsedTimeCounter;
 
     /** Called when the activity is first created. */
     @Override
@@ -111,7 +109,7 @@ public class AudioPlay extends Activity {
     /**
      * Add click listeners to the buttons.
      */
-    void setupButtons() {
+    private void setupButtons() {
         final ImageButton rew = (ImageButton) findViewById(R.id.rew);
         rew.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,7 +133,7 @@ public class AudioPlay extends Activity {
         });
     }
 
-    void setupText() {
+    private void setupText() {
         final Intent received = getIntent();
         final Bundle data = received.getExtras();
 
@@ -143,7 +141,7 @@ public class AudioPlay extends Activity {
         setTextViewFromBundle(data, Keys.DESCRIPTION, R.id.description);
     }
 
-    void setTextViewFromBundle(Bundle data, String key, int textViewId) {
+    private void setTextViewFromBundle(Bundle data, String key, int textViewId) {
         String text = data.getString(key);
         if (text == null) {
             text = "";
@@ -156,7 +154,7 @@ public class AudioPlay extends Activity {
      * Setup the text indicating the elapsed time and the total duration of the
      * audio file.
      */
-    void setupTimeCodes() {
+    private void setupTimeCodes() {
         // assert: player is a valid MediaPlayer with an audio file prepared
 
         final TextView duration = (TextView) findViewById(R.id.duration);
@@ -172,7 +170,7 @@ public class AudioPlay extends Activity {
      * were to pause, then we'd be out of whack and need to restart on play.
      * Might as well stop the timer on pause.
      */
-    void startTimeCodeUpdater() {
+    private void startTimeCodeUpdater() {
         final TextView elapsed = (TextView) findViewById(R.id.elapsed);
         final SeekBar progress = (SeekBar) findViewById(R.id.progress);
 
@@ -195,15 +193,15 @@ public class AudioPlay extends Activity {
         elapsedTimeCounter.start();
     }
 
-    void stopTimeCodeUpdater() {
+    private void stopTimeCodeUpdater() {
         elapsedTimeCounter.cancel();
     }
 
-    String timeCodeToString(int timeCode_ms) {
+    private String timeCodeToString(int timeCode_ms) {
         return DateUtils.formatElapsedTime(timeCode_ms / 1000);
     }
 
-    void setupProgress() {
+    private void setupProgress() {
         final SeekBar progress = (SeekBar) findViewById(R.id.progress);
 
         // apply the song's maximum to the SeekBar so it's using the same scale
@@ -234,7 +232,7 @@ public class AudioPlay extends Activity {
      * 
      * @param uri The audio file to play
      */
-    void setupPlayback(Uri uri) throws FileNotFoundException {
+    private void setupPlayback(Uri uri) throws FileNotFoundException {
         // TODO: if we don't stop before we end, will the player still be
         // playing when we resume?
         player = MediaPlayer.create(this, uri);
@@ -260,7 +258,7 @@ public class AudioPlay extends Activity {
      * 
      * @return A uri for an audio file.
      */
-    public Uri getUriToPlay() throws FileNotFoundException {
+    protected Uri getUriToPlay() throws FileNotFoundException {
         final Intent received = getIntent();
         final Bundle data = received.getExtras();
 
@@ -282,7 +280,7 @@ public class AudioPlay extends Activity {
      * @return A time in the audio file. Does not validate that the time fits
      *         in the length of the duration.
      */
-    public int getStartTimeCode() {
+    protected int getStartTimeCode() {
         final Intent received = getIntent();
         final Bundle data = received.getExtras();
 
@@ -292,10 +290,10 @@ public class AudioPlay extends Activity {
 
     // TODO: move this constant somewhere shared
     // all request codes must be >= 0
-    static final int REQUEST_FIRST_USER = 0;
+    public static final int REQUEST_FIRST_USER = 0;
 
-    static class Request {
-        static final int START;
+    public static class Request {
+        public static final int START;
 
         static {
             int i = REQUEST_FIRST_USER;
@@ -303,38 +301,38 @@ public class AudioPlay extends Activity {
         }
     }
 
-    static class Keys {
+    public static class Keys {
         // ////
         // INPUT
         //
         // A uri describing an audio file. Required.
-        static final String URI = "URI";
+        public static final String URI = "URI";
 
         // Title information for the audio file: artist and track name.
         // Optional.
-        static final String HEADER = "HEADER";
+        public static final String HEADER = "HEADER";
 
         // Long form text description of the audio file. Optional.
-        static final String DESCRIPTION = "DESCRIPTION";
+        public static final String DESCRIPTION = "DESCRIPTION";
 
         // When in the song to start playing. Time in milliseconds. Optional.
-        static final String START_TIME = "START_TIME";
+        public static final String START_TIME = "START_TIME";
 
         // ////
         // OUTPUT
         //
         // Where in the song we stopped playing. Time in milliseconds.
-        static final String CURRENT_TIME = "CURRENT_TIME";
+        public static final String CURRENT_TIME = "CURRENT_TIME";
     }
 
-    static class Result {
-        static final int ERROR;
+    public static class Result {
+        public static final int ERROR;
 
-        static final int SKIP_BACK;
+        public static final int SKIP_BACK;
 
-        static final int SKIP_FORWARD;
+        public static final int SKIP_FORWARD;
 
-        static final int COMPLETE;
+        public static final int COMPLETE;
         static {
             int i = RESULT_FIRST_USER;
             ERROR = i++;
@@ -344,15 +342,15 @@ public class AudioPlay extends Activity {
         }
     }
 
-    void skipBackward() {
+    private void skipBackward() {
         returnResult(Result.SKIP_BACK);
     }
 
-    void skipForward() {
+    private void skipForward() {
         returnResult(Result.SKIP_FORWARD);
     }
 
-    void playOrPause(ImageButton playPauseButton) {
+    private void playOrPause(ImageButton playPauseButton) {
         if (player.isPlaying()) {
             player.pause();
 
@@ -371,7 +369,7 @@ public class AudioPlay extends Activity {
         }
     }
 
-    void returnResult(int returnCode) {
+    private void returnResult(int returnCode) {
         final Intent i = new Intent();
         i.putExtra(Keys.CURRENT_TIME, player.getCurrentPosition());
         setResult(returnCode, i);
