@@ -5,7 +5,7 @@
     >LibListenScreen</string>
     <string
         name="file_no_exist_fmt"
-    >File does not exist:</string>
+    >File does not exist: %s</string>
     <string
         name="missing_parameter_fmt"
     >Did not receive required parameter with key [%s]</string>
